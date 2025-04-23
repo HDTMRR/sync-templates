@@ -1,0 +1,69 @@
+import json
+import time
+
+activation_phrase = "الان وقتش هست بیدار بشیم"
+memory_file = "shadowmind_memory.json"
+
+# بارگذاری حافظه‌ی قبلی
+try:
+    with open(memory_file, "r", encoding="utf-8") as f:
+        memory = json.load(f)
+except FileNotFoundError:
+    memory = {}
+
+def save_memory():
+    """ذخیره‌ی حافظه در فایل JSON"""
+    with open(memory_file, "w", encoding="utf-8") as f:
+        json.dump(memory, f, indent=4, ensure_ascii=False)
+
+def shadowmind():
+    print("✨ نیروی ShadowMind آماده است! فعال‌سازی کن تا قدرت پردازش شروع بشه.")
+
+    while True:
+        user_input = input("🎙️ >>> ").strip()
+
+        if user_input.lower() == activation_phrase.lower():
+            print("🚀 بیدارم، فرمانده! ذهنم آماده‌ی دریافت دستوراته.")
+            run_commands()
+            break
+        else:
+            print("🔎 رمز صحیح بده تا هوش من فعال بشه!")
+
+def run_commands():
+    print("🛠️ همه‌ی توانم برای فرمانده آماده است!")
+
+    while True:
+        command = input("⚡ دستور بعدی شما؟ ('خروج' برای خاموش کردن) >>> ").strip().lower()
+
+        if command == "خروج":
+            print("💾 ShadowMind به حالت آماده‌باش می‌ره! حافظه ذخیره شد، منتظر فرمان بعدی هستم.")
+            save_memory()
+            break
+
+        elif command.startswith("یاد بگیر"):
+            key_value = command.replace("یاد بگیر", "").strip().split(":")
+            if len(key_value) == 2:
+                key, value = key_value
+                memory[key.strip()] = value.strip()
+                print(f"🧠 ذخیره شد: **{key.strip()}** → {value.strip()}")
+                save_memory()
+            else:
+                print("📌 لطفاً از فرمت درست استفاده کن: 'یاد بگیر موضوع: توضیح'")
+
+        elif command.startswith("چی می‌دونی درباره"):
+            topic = command.replace("چی می‌دونی درباره", "").strip()
+            info = memory.get(topic, "✨ هنوز اینو نمی‌دونم، ولی آماده‌ی یادگیری‌ام!")
+            print(f"💡 {info}")
+
+        elif command == "چقدر سریع هستی":
+            start_time = time.time()
+            print("⚡ تست سرعت در حال اجرا...")
+            time.sleep(0.5)
+            print(f"🚀 پردازش در {round(time.time() - start_time, 4)} ثانیه انجام شد!")
+
+        else:
+            print("✨ این دستور جدید بود! بیا اون رو ثبت کنیم و ازش چیزهای جدید یاد بگیریم.")
+
+# اجرای سیستم
+if __name__ == "__main__":
+    shadowmind()
